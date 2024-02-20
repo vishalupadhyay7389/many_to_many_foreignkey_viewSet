@@ -28,3 +28,21 @@ class StudentDetailView(ViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serlizer = StudentSerializer(student)
         return Response(serlizer.data)
+    
+    def partial_update(self , request , pk):
+        try:
+            stud = Student.objects.get(pk=pk)
+        except Student.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serlizer = StudentSerializer(stud ,data=request.data , partial=True)
+        if serlizer.is_valid():
+            serlizer.save()
+            return Response(serlizer.data , status=status.HTTP_201_CREATED)
+        return Response(serlizer.errors , status=status.HTTP_404_NOT_FOUND)
+    def destroy(self , request , pk):
+        try:
+            stud = Student.objects.get(pk=pk)
+        except Student.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        stud.delete()
+            
